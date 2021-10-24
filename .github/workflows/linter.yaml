@@ -6,7 +6,16 @@ jobs:
   mdl:
     runs-on: ubuntu-latest
     steps:
+      - name: Greeting
+        run: echo 'Hello BlablaConf 2021'
+
       - name: Check out code
         uses: actions/checkout@v2
+
+      - name: "Check file existence"
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "slides.md"
+
       - name: Run Markdown Lint
         uses: actionshub/markdownlint@main
