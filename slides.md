@@ -1,4 +1,4 @@
-%title: \n Github actions in Action - Blablaconf 2021
+%title: Github actions in Action - Blablaconf 2021
 %author: Abderrahim - @soub4i
 %date: 2021-10-28
 
