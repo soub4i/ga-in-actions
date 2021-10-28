@@ -1,6 +1,9 @@
-%title: Github actions in Action - Blablaconf 2021
+%title: \n Github actions in Action - Blablaconf 2021
 %author: Abderrahim - @soub4i
 %date: 2021-10-28
+
+
+
 
 # Github actions in Action
 
@@ -47,7 +50,7 @@ MMM:..````````
 
 Abderrahim SOUBAI-ELIDRISI (@soub4i)
 
-- Software engineer and cloud | https://soubai.me
+- Software engineer & cloud architect | https://soubai.me
 - Host S7aba Podcast (Moroccan cloud podcast) | https://s7aba.ma
 
 ---
@@ -103,15 +106,34 @@ and either continuous delivery or continuous deployment (CD).
 
 ## Definition
 
-> Github Actions: enables you to create custom software development lifecycle
+> Github Actions: enables you to create custom/automate software development lifecycle
+
+
+                  +----------------+       +----------------+       
+                  |                |------>|                |
+                  |  When this     |       |   Do this      |
+                  +----------------+       +----------------+
+
+
+---
+
+## Usage
+
+- Project management
+- Linting and formatting
+- Building
+- Testing
+- Deploying
+- Putting releases out
+
 
 ---
 
 # Main concepts
 
           +----------------+       +----------------+
-          |                |------>|                |
-          |     Event      |       |   workflows    |
+          |     Event      |------>|                |
+          | (push,tag,...) |       |   workflows    |
           +----------------+       +-------|--------+
                                            |
                                            |
@@ -162,6 +184,21 @@ and either continuous delivery or continuous deployment (CD).
 
 ---
 
+## Pros and cons
+
+.--------------------------------+-------------------.
+|Advantages                      | Disadvantages     |
+|--------------------------------+-------------------|
+|Free (pay-as-you-go)            |No native caching  |
+|--------------------------------+-------------------|
+|cross-platform (Linux/macOS/Win)|Single platform    |
+|--------------------------------+-------------------|
+|Matrix builds/any language      | poor documentation|
+'--------------------------------+-------------------'
+
+
+---
+
 ## Example 1
 
 ~~~
@@ -193,39 +230,39 @@ jobs:
 ## Example 2
 
 ~~~
-name: Run test matrix
-
-on: [push]
+on:
+  pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  commit-lint:
+    steps:
+      # ...
+  unit-test:
+    needs: commit-lint
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x, 14.x]
-        mongodb-version: [4.0, 4.2, 4.4]
-        redis-version: [4, 5]
+        python-version: [3.7, 3.8]
 
     steps:
-      - name: Git checkout
-        uses: actions/checkout@v2
+      # ...
+      - name: Test with pytest
+        run: |
+          # ...
+          pytest --force-flaky --min-passes 1 --max-runs 5 --cov=jina --cov-report=xml -n 1 --timeout=120 -v tests/unit
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
+  integration-test:
+    needs: commit-lint
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8]
 
-      - name: Start MongoDB v${{ matrix.mongodb-version }}
-        uses: supercharge/mongodb-github-action@1.3.0
-        with:
-          mongodb-version: ${{ matrix.mongodb-version }}
+    steps:
+      # ...
+      - name: Test with pytest
+        run: |
+          # ...
+          pytest --force-flaky --min-passes 1 --max-runs 5 --cov=jina --cov-report=xml -n 1 --timeout=120 -v --ignore-glob='tests/integration/hub_usage/dummyhub*' tests/integration
 
-      - name: Start Redis v${{ matrix.redis-version }}
-        uses: supercharge/redis-github-action@1.1.0
-        with:
-          redis-version: ${{ matrix.redis-version }}
-
-      - run: echo "done"
 ~~~
 
 ---
@@ -272,4 +309,3 @@ jobs:
  █ ▄▄▄ █ ▄▄██  ▀▄ ▄█▄▀▀█▀█▄▄▄█▀▀ █
  █ ███ █ █ ▀ ▀██▄█▀▀▀█▄  ▄▀ ▀▀▄▄▀▀
  █▄▄▄▄▄█ █▄█ █▀▄█ ▄  ▀██▄▄▄ ▀ █▀▄
- 
