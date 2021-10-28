@@ -3,7 +3,7 @@ name: markdownlint
 on: [push, pull_request]
 
 jobs:
-  Markdown linting:
+  Markdown-linting:
     runs-on: ubuntu-latest
     steps:
       - name: Greeting
